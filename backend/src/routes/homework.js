@@ -41,9 +41,15 @@ router.post('/', auth, parentOnly, [
 
     const homework = result.rows[0];
 
-    // 通过Socket.io通知学生端
-    const io = req.app.get('io');
-    io.emit('homework:created', { homework, student_id });
+    // 通过Socket.io通知学生端(Vercel Serverless环境不支持)
+    try {
+      const io = req.app.get('io');
+      if (io) {
+        io.emit('homework:created', { homework, student_id });
+      }
+    } catch (socketError) {
+      console.log('Socket.io通知失败(正常):', socketError.message);
+    }
 
     res.status(201).json({ message: '作业创建成功', homework });
   } catch (error) {
