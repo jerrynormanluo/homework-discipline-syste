@@ -44,22 +44,28 @@ const Settings = () => {
 
   const loadStudents = async () => {
     try {
+      console.log('加载学生列表...');
       const data = await userService.getMyStudents();
-      setStudents(data);
+      console.log('学生数据:', data);
+      setStudents(data || []);
     } catch (error) {
-      message.error('加载学生列表失败');
+      console.error('加载学生列表失败:', error);
+      message.error('加载学生列表失败: ' + (error.error || error.message));
+      setStudents([]);
     }
   };
 
   const handleBindStudent = async (values) => {
     try {
+      console.log('绑定学生:', values);
       await userService.bindStudent(values);
       message.success('绑定成功');
       setBindModalVisible(false);
       form.resetFields();
       loadStudents();
     } catch (error) {
-      message.error('绑定失败');
+      console.error('绑定失败:', error);
+      message.error(error.error || error.message || '绑定失败，请检查学生账号是否存在');
     }
   };
 
