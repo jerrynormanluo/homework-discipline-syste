@@ -42,22 +42,24 @@ const Dashboard = () => {
   const loadStudents = async () => {
     try {
       const studentsData = await userService.getMyStudents();
-      setStudents(studentsData);
+      setStudents(studentsData || []);
       
       // 加载统计数据
-      if (studentsData.length > 0) {
+      if (studentsData && studentsData.length > 0) {
         const homeworks = await homeworkService.getHomeworkList({ 
           student_id: studentsData[0].student_id 
         });
         setStatistics({
-          totalHomework: homeworks.length,
-          completedHomework: homeworks.filter(h => h.status === 'completed').length,
-          inProgressHomework: homeworks.filter(h => h.status === 'in_progress').length,
-          overdueHomework: homeworks.filter(h => h.status === 'overdue').length,
+          totalHomework: homeworks?.length || 0,
+          completedHomework: homeworks?.filter(h => h.status === 'completed')?.length || 0,
+          inProgressHomework: homeworks?.filter(h => h.status === 'in_progress')?.length || 0,
+          overdueHomework: homeworks?.filter(h => h.status === 'overdue')?.length || 0,
         });
       }
     } catch (error) {
       console.error('加载学生数据失败:', error);
+      // 即使失败也不影响页面显示
+      setStudents([]);
     }
   };
 
