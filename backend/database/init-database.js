@@ -4,9 +4,12 @@
  * 用于创建表结构和插入初始数据
  */
 
-const fs = require('fs');
+// 首先加载环境变量
 const path = require('path');
-const pool = require('./src/config/database');
+require('dotenv').config({ path: path.join(__dirname, '..', '.env.production') });
+
+const fs = require('fs');
+const pool = require('../src/config/database');
 const bcrypt = require('bcryptjs');
 
 async function initializeDatabase() {
@@ -14,7 +17,7 @@ async function initializeDatabase() {
 
   try {
     // 读取SQL文件
-    const sqlPath = path.join(__dirname, 'database', 'init.sql');
+    const sqlPath = path.join(__dirname, 'init.sql');
     const sql = fs.readFileSync(sqlPath, 'utf8');
 
     // 执行SQL
