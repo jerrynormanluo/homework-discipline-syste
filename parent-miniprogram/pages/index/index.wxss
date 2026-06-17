@@ -1,0 +1,131 @@
+/* pages/index/index.wxss */
+.header {
+  background-color: #4A90E2;
+  padding: 40rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #FFFFFF;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  margin-right: 16rpx;
+}
+
+.username {
+  font-size: 28rpx;
+  color: #FFFFFF;
+}
+
+.statistics {
+  display: flex;
+  justify-content: space-around;
+  background-color: #FFFFFF;
+  padding: 40rpx 20rpx;
+  margin: 20rpx;
+  border-radius: 16rpx;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-number {
+  font-size: 48rpx;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #7F8C8D;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30rpx;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60rpx 0;
+}
+
+.student-list {
+  margin-top: 20rpx;
+}
+
+.student-item {
+  display: flex;
+  align-items: center;
+  padding: 24rpx;
+  background-color: #F5F7FA;
+  border-radius: 12rpx;
+  margin-bottom: 16rpx;
+}
+
+.student-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  margin-right: 24rpx;
+}
+
+.student-info {
+  flex: 1;
+}
+
+.student-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #2C3E50;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.device-info {
+  font-size: 24rpx;
+  color: #7F8C8D;
+}
+
+.arrow {
+  font-size: 48rpx;
+  color: #7F8C8D;
+}
+
+.quick-actions {
+  display: flex;
+  justify-content: space-around;
+}
+
+.action-item {
+  text-align: center;
+  padding: 30rpx;
+}
+
+.action-icon {
+  font-size: 64rpx;
+  display: block;
+  margin-bottom: 16rpx;
+}
+
+.action-text {
+  font-size: 28rpx;
+  color: #2C3E50;
+}

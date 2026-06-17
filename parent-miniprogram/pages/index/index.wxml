@@ -1,0 +1,77 @@
+<!--pages/index/index.wxml-->
+<view class="container">
+  <view class="header">
+    <text class="title">家长管理端</text>
+    <view class="user-info" bindtap="goToSettings">
+      <image class="avatar" src="{{userInfo.avatar_url || '/images/default-avatar.png'}}" />
+      <text class="username">{{userInfo.nickname || '家长'}}</text>
+    </view>
+  </view>
+
+  <view class="statistics">
+    <view class="stat-item">
+      <text class="stat-number">{{statistics.totalHomework}}</text>
+      <text class="stat-label">总作业数</text>
+    </view>
+    <view class="stat-item">
+      <text class="stat-number success-color">{{statistics.completedHomework}}</text>
+      <text class="stat-label">已完成</text>
+    </view>
+    <view class="stat-item">
+      <text class="stat-number primary-color">{{statistics.inProgressHomework}}</text>
+      <text class="stat-label">进行中</text>
+    </view>
+    <view class="stat-item">
+      <text class="stat-number danger-color">{{statistics.overdueHomework}}</text>
+      <text class="stat-label">已超时</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-header">
+      <text class="subtitle">我的学生</text>
+      <text class="primary-color" bindtap="goToSettings">添加学生</text>
+    </view>
+    
+    <view wx:if="{{students.length === 0}}" class="empty-state">
+      <text class="text-secondary">暂无绑定的学生，请先添加学生设备</text>
+    </view>
+    
+    <view wx:else class="student-list">
+      <view 
+        class="student-item" 
+        wx:for="{{students}}" 
+        wx:key="student_id"
+        bindtap="goToStudentDetail"
+        data-id="{{item.student_id}}"
+      >
+        <image class="student-avatar" src="{{item.avatar_url || '/images/default-avatar.png'}}" />
+        <view class="student-info">
+          <text class="student-name">{{item.nickname}}</text>
+          <text class="device-info">{{item.device_name}} - {{item.device_type}}</text>
+        </view>
+        <text class="arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-header">
+      <text class="subtitle">快捷操作</text>
+    </view>
+    <view class="quick-actions">
+      <view class="action-item" bindtap="goToHomework">
+        <text class="action-icon">📝</text>
+        <text class="action-text">发布作业</text>
+      </view>
+      <view class="action-item" bindtap="goToStatistics">
+        <text class="action-icon">📊</text>
+        <text class="action-text">数据统计</text>
+      </view>
+      <view class="action-item" bindtap="goToSettings">
+        <text class="action-icon">⚙️</text>
+        <text class="action-text">系统设置</text>
+      </view>
+    </view>
+  </view>
+</view>

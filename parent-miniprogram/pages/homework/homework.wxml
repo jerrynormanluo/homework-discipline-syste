@@ -1,0 +1,61 @@
+<!--pages/homework/homework.wxml-->
+<view class="container">
+  <view class="header">
+    <text class="title">作业管理</text>
+    <button class="btn-small" bindtap="createHomework">发布作业</button>
+  </view>
+
+  <view class="filter-bar">
+    <view class="filter-item">
+      <picker mode="selector" range="{{students}}" range-key="nickname" bindchange="onStudentChange">
+        <view class="picker">
+          {{selectedStudent ? selectedStudent.nickname : '选择学生'}} ›
+        </view>
+      </picker>
+    </view>
+    <view class="filter-item">
+      <picker mode="selector" range="{{statusOptions}}" bindchange="onStatusChange">
+        <view class="picker">
+          {{statusOptions[selectedStatus]}} ›
+        </view>
+      </picker>
+    </view>
+  </view>
+
+  <view class="homework-list">
+    <view 
+      class="homework-item" 
+      wx:for="{{homeworks}}" 
+      wx:key="id"
+      bindtap="viewHomework"
+      data-id="{{item.id}}"
+    >
+      <view class="homework-header">
+        <text class="homework-title">{{item.title}}</text>
+        <view class="tag {{getPriorityClass(item.priority)}}">
+          {{getPriorityText(item.priority)}}
+        </view>
+      </view>
+      
+      <view class="homework-info">
+        <text class="info-text">学科: {{item.subject}}</text>
+        <text class="info-text">截止: {{formatDate(item.deadline)}}</text>
+      </view>
+      
+      <view class="homework-status">
+        <view class="tag {{getStatusClass(item.status)}}">
+          {{getStatusText(item.status)}}
+        </view>
+      </view>
+      
+      <view class="homework-actions">
+        <text class="action-text" bindtap="editHomework" data-id="{{item.id}}" catchtap="true">编辑</text>
+        <text class="action-text danger-color" bindtap="deleteHomework" data-id="{{item.id}}" catchtap="true">删除</text>
+      </view>
+    </view>
+    
+    <view wx:if="{{homeworks.length === 0}}" class="empty-state">
+      <text class="text-secondary">暂无作业</text>
+    </view>
+  </view>
+</view>

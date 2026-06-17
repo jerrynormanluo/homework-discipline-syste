@@ -1,0 +1,70 @@
+<!--pages/settings/settings.wxml-->
+<view class="container">
+  <view class="header">
+    <text class="title">我的</text>
+  </view>
+
+  <view class="user-card">
+    <image class="user-avatar" src="{{userInfo.avatar_url || '/images/default-avatar.png'}}" />
+    <view class="user-info">
+      <text class="user-name">{{userInfo.nickname || '家长'}}</text>
+      <text class="user-phone">{{userInfo.phone}}</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-header">
+      <text class="subtitle">学生管理</text>
+    </view>
+    <view class="menu-list">
+      <view class="menu-item" bindtap="bindStudent">
+        <text class="menu-text">添加学生</text>
+        <text class="arrow">›</text>
+      </view>
+      <view class="menu-item" bindtap="manageStudents">
+        <text class="menu-text">管理学生</text>
+        <text class="arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-header">
+      <text class="subtitle">系统设置</text>
+    </view>
+    <view class="menu-list">
+      <view class="menu-item" bindtap="notificationSettings">
+        <text class="menu-text">通知设置</text>
+        <text class="arrow">›</text>
+      </view>
+      <view class="menu-item" bindtap="privacySettings">
+        <text class="menu-text">隐私设置</text>
+        <text class="arrow">›</text>
+      </view>
+      <view class="menu-item" bindtap="about">
+        <text class="menu-text">关于我们</text>
+        <text class="arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-header">
+      <text class="subtitle">其他</text>
+    </view>
+    <view class="menu-list">
+      <view class="menu-item" bindtap="help">
+        <text class="menu-text">帮助中心</text>
+        <text class="arrow">›</text>
+      </view>
+      <view class="menu-item" bindtap="feedback">
+        <text class="menu-text">意见反馈</text>
+        <text class="arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="logout-section">
+    <button class="btn btn-danger" bindtap="handleLogout">退出登录</button>
+  </view>
+</view>

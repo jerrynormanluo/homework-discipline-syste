@@ -1,0 +1,79 @@
+<!--pages/student/student.wxml-->
+<view class="container">
+  <view class="header">
+    <text class="title">学生详情</text>
+  </view>
+
+  <view class="student-info-card">
+    <image class="student-avatar" src="{{student.avatar_url || '/images/default-avatar.png'}}" />
+    <view class="student-details">
+      <text class="student-name">{{student.nickname}}</text>
+      <text class="device-info">{{student.device_name}} - {{student.device_type}}</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-header">
+      <text class="subtitle">学习统计</text>
+    </view>
+    <view class="statistics-grid">
+      <view class="stat-box">
+        <text class="stat-value">{{statistics.totalHomework}}</text>
+        <text class="stat-label">总作业</text>
+      </view>
+      <view class="stat-box">
+        <text class="stat-value success-color">{{statistics.completedHomework}}</text>
+        <text class="stat-label">已完成</text>
+      </view>
+      <view class="stat-box">
+        <text class="stat-value primary-color">{{statistics.inProgressHomework}}</text>
+        <text class="stat-label">进行中</text>
+      </view>
+      <view class="stat-box">
+        <text class="stat-value danger-color">{{statistics.overdueHomework}}</text>
+        <text class="stat-label">已超时</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-header">
+      <text class="subtitle">快捷操作</text>
+    </view>
+    <view class="action-buttons">
+      <button class="action-btn" bindtap="forceFocus">
+        <text class="action-icon">⏱️</text>
+        <text class="action-text">强制专注</text>
+      </button>
+      <button class="action-btn" bindtap="viewHomework">
+        <text class="action-icon">📝</text>
+        <text class="action-text">查看作业</text>
+      </button>
+      <button class="action-btn" bindtap="viewPoints">
+        <text class="action-icon">⭐</text>
+        <text class="action-text">积分记录</text>
+      </button>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-header">
+      <text class="subtitle">最近作业</text>
+    </view>
+    <view class="homework-preview">
+      <view 
+        class="homework-preview-item" 
+        wx:for="{{recentHomeworks}}" 
+        wx:key="id"
+      >
+        <text class="homework-preview-title">{{item.title}}</text>
+        <view class="tag {{getStatusClass(item.status)}}">
+          {{getStatusText(item.status)}}
+        </view>
+      </view>
+      <view wx:if="{{recentHomeworks.length === 0}}" class="empty-state">
+        <text class="text-secondary">暂无作业记录</text>
+      </view>
+    </view>
+  </view>
+</view>

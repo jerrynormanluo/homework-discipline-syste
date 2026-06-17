@@ -1,0 +1,45 @@
+<!--pages/login/login.wxml-->
+<view class="container">
+  <view class="login-card">
+    <view class="header">
+      <text class="title">作业自律助手</text>
+      <text class="subtitle">家长端</text>
+    </view>
+
+    <view class="form">
+      <view class="form-item">
+        <text class="form-label">手机号</text>
+        <input 
+          class="input" 
+          type="number" 
+          placeholder="请输入手机号" 
+          maxlength="11"
+          bindinput="onPhoneInput"
+        />
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">密码</text>
+        <input 
+          class="input" 
+          type="password" 
+          placeholder="请输入密码" 
+          bindinput="onPasswordInput"
+        />
+      </view>
+
+      <button 
+        class="btn btn-primary" 
+        bindtap="handleLogin"
+        loading="{{loading}}"
+      >
+        {{loading ? '登录中...' : '登录'}}
+      </button>
+
+      <view class="register-link">
+        <text class="text-secondary">还没有账号？</text>
+        <text class="primary-color" bindtap="goToRegister">去注册</text>
+      </view>
+    </view>
+  </view>
+</view>

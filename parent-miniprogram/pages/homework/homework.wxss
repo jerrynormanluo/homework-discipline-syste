@@ -1,0 +1,105 @@
+/* pages/homework/homework.wxss */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx;
+  background-color: #FFFFFF;
+  margin-bottom: 20rpx;
+}
+
+.title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #2C3E50;
+}
+
+.btn-small {
+  background-color: #4A90E2;
+  color: #FFFFFF;
+  border-radius: 8rpx;
+  padding: 16rpx 32rpx;
+  font-size: 24rpx;
+}
+
+.filter-bar {
+  display: flex;
+  background-color: #FFFFFF;
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.filter-item {
+  flex: 1;
+  margin-right: 20rpx;
+}
+
+.filter-item:last-child {
+  margin-right: 0;
+}
+
+.picker {
+  background-color: #F5F7FA;
+  padding: 20rpx;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  color: #2C3E50;
+}
+
+.homework-list {
+  padding: 0 20rpx;
+}
+
+.homework-item {
+  background-color: #FFFFFF;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+}
+
+.homework-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20rpx;
+}
+
+.homework-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #2C3E50;
+  flex: 1;
+}
+
+.homework-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+
+.info-text {
+  font-size: 26rpx;
+  color: #7F8C8D;
+}
+
+.homework-status {
+  margin-bottom: 20rpx;
+}
+
+.homework-actions {
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1rpx solid #E0E0E0;
+  padding-top: 20rpx;
+}
+
+.action-text {
+  font-size: 28rpx;
+  color: #4A90E2;
+  margin-left: 30rpx;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 80rpx 0;
+}

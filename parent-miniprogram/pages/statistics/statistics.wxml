@@ -1,0 +1,84 @@
+<!--pages/statistics/statistics.wxml-->
+<view class="container">
+  <view class="header">
+    <text class="title">数据统计</text>
+  </view>
+
+  <view class="filter-bar">
+    <view class="filter-item">
+      <picker mode="selector" range="{{students}}" range-key="nickname" bindchange="onStudentChange">
+        <view class="picker">
+          {{selectedStudent ? selectedStudent.nickname : '选择学生'}} ›
+        </view>
+      </picker>
+    </view>
+    <view class="filter-item">
+      <picker mode="selector" range="{{periodOptions}}" bindchange="onPeriodChange">
+        <view class="picker">
+          {{periodOptions[selectedPeriod]}} ›
+        </view>
+      </picker>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-header">
+      <text class="subtitle">学习概览</text>
+    </view>
+    <view class="overview-stats">
+      <view class="overview-item">
+        <text class="overview-value">{{overview.totalHomework}}</text>
+        <text class="overview-label">总作业数</text>
+      </view>
+      <view class="overview-item">
+        <text class="overview-value success-color">{{overview.completedHomework}}</text>
+        <text class="overview-label">已完成</text>
+      </view>
+      <view class="overview-item">
+        <text class="overview-value primary-color">{{overview.totalFocusDuration}}</text>
+        <text class="overview-label">专注时长(分钟)</text>
+      </view>
+      <view class="overview-item">
+        <text class="overview-value warning-color">{{overview.pointsEarned}}</text>
+        <text class="overview-label">获得积分</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-header">
+      <text class="subtitle">作业完成趋势</text>
+    </view>
+    <view class="chart-placeholder">
+      <text class="text-secondary">图表功能开发中</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-header">
+      <text class="subtitle">学科分布</text>
+    </view>
+    <view class="chart-placeholder">
+      <text class="text-secondary">图表功能开发中</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-header">
+      <text class="subtitle">详细数据</text>
+    </view>
+    <view class="data-list">
+      <view class="data-item" wx:for="{{statistics}}" wx:key="id">
+        <text class="data-date">{{formatDate(item.stat_date)}}</text>
+        <view class="data-values">
+          <text class="data-value">作业: {{item.total_homework}}</text>
+          <text class="data-value">完成: {{item.completed_homework}}</text>
+          <text class="data-value">专注: {{item.total_focus_duration}}分钟</text>
+        </view>
+      </view>
+      <view wx:if="{{statistics.length === 0}}" class="empty-state">
+        <text class="text-secondary">暂无统计数据</text>
+      </view>
+    </view>
+  </view>
+</view>

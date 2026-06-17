@@ -1,0 +1,83 @@
+/* pages/settings/settings.wxss */
+.header {
+  background-color: #4A90E2;
+  padding: 40rpx;
+  margin-bottom: 20rpx;
+}
+
+.title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #FFFFFF;
+}
+
+.user-card {
+  background-color: #FFFFFF;
+  border-radius: 16rpx;
+  padding: 40rpx;
+  margin: 20rpx;
+  display: flex;
+  align-items: center;
+}
+
+.user-avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  margin-right: 30rpx;
+}
+
+.user-info {
+  flex: 1;
+}
+
+.user-name {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #2C3E50;
+  display: block;
+  margin-bottom: 12rpx;
+}
+
+.user-phone {
+  font-size: 26rpx;
+  color: #7F8C8D;
+}
+
+.menu-list {
+  margin-top: 20rpx;
+}
+
+.menu-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx 0;
+  border-bottom: 1rpx solid #E0E0E0;
+}
+
+.menu-item:last-child {
+  border-bottom: none;
+}
+
+.menu-text {
+  font-size: 28rpx;
+  color: #2C3E50;
+}
+
+.arrow {
+  font-size: 48rpx;
+  color: #7F8C8D;
+}
+
+.logout-section {
+  padding: 40rpx 20rpx;
+}
+
+.btn-danger {
+  background-color: #E74C3C;
+  color: #FFFFFF;
+  border-radius: 8rpx;
+  padding: 24rpx;
+  font-size: 28rpx;
+}
