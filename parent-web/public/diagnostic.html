@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统诊断</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-result {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .success {
+            border-left: 4px solid #52c41a;
+        }
+        .error {
+            border-left: 4px solid #ff4d4f;
+        }
+        .info {
+            border-left: 4px solid #1890ff;
+        }
+        h1 {
+            color: #333;
+        }
+        button {
+            background: #1890ff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #40a9ff;
+        }
+        pre {
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 系统诊断工具</h1>
+    
+    <div class="test-result info">
+        <h3>系统信息</h3>
+        <p><strong>前端URL:</strong> <span id="frontend-url"></span></p>
+        <p><strong>后端URL:</strong> https://backend-five-indol-51.vercel.app</p>
+        <p><strong>时间:</strong> <span id="current-time"></span></p>
+    </div>
+
+    <div>
+        <button onclick="testBackendHealth()">测试后端健康检查</button>
+        <button onclick="testLogin()">测试登录</button>
+        <button onclick="testAPIWithToken()">测试认证API</button>
+        <button onclick="clearStorage()">清除本地存储</button>
+    </div>
+
+    <div id="results"></div>
+
+    <script>
+        const BACKEND_URL = 'https://backend-five-indol-51.vercel.app';
+        
+        document.getElementById('frontend-url').textContent = window.location.origin;
+        document.getElementById('current-time').textContent = new Date().toLocaleString('zh-CN');
+
+        function addResult(title, status, data, isError = false) {
+            const div = document.createElement('div');
+            div.className = `test-result ${isError ? 'error' : 'success'}`;
+            div.innerHTML = `
+                <h4>${isError ? '❌' : '✅'} ${title}</h4>
+                <pre>${JSON.stringify(data, null, 2)}</pre>
+            `;
+            document.getElementById('results').prepend(div);
+        }
+
+        async function testBackendHealth() {
+            try {
+                const response = await fetch(`${BACKEND_URL}/health`);
+                const data = await response.json();
+                addResult('后端健康检查', 'success', data);
+            } catch (error) {
+                addResult('后端健康检查', 'error', { error: error.message }, true);
+            }
+        }
+
+        async function testLogin() {
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        phone: '13800138000',
+                        password: '123456'
+                    })
+                });
+                const data = await response.json();
+                
+                if (data.token) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    addResult('登录测试', 'success', { 
+                        message: '登录成功,Token已保存',
+                        user: data.user 
+                    });
+                } else {
+                    addResult('登录测试', 'error', data, true);
+                }
+            } catch (error) {
+                addResult('登录测试', 'error', { error: error.message }, true);
+            }
+        }
+
+        async function testAPIWithToken() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                addResult('API测试', 'error', { error: '未找到Token,请先登录' }, true);
+                return;
+            }
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/auth/me`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                const data = await response.json();
+                addResult('获取用户信息', 'success', data);
+            } catch (error) {
+                addResult('获取用户信息', 'error', { error: error.message }, true);
+            }
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/users/my-students`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                const data = await response.json();
+                addResult('获取学生列表', 'success', data);
+            } catch (error) {
+                addResult('获取学生列表', 'error', { error: error.message }, true);
+            }
+        }
+
+        function clearStorage() {
+            localStorage.clear();
+            addResult('清除存储', 'success', { message: '本地存储已清除' });
+        }
+
+        // 自动运行健康检查
+        window.onload = () => {
+            testBackendHealth();
+        };
+    </script>
+</body>
+</html>
