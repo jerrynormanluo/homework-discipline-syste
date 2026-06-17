@@ -43,6 +43,15 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// 根路径
+app.get('/', (req, res) => {
+  res.json({ 
+    message: '作业自律辅助系统 API',
+    version: '1.0.0',
+    status: 'running'
+  });
+});
+
 // 404 处理
 app.use((req, res) => {
   res.status(404).json({ error: '接口不存在' });
@@ -57,4 +66,5 @@ app.use((err, req, res, next) => {
   });
 });
 
+// Vercel Serverless 导出
 module.exports = app;
