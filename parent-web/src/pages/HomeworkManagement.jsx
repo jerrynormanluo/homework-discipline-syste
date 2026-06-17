@@ -100,6 +100,7 @@ const HomeworkManagement = () => {
         await homeworkService.updateHomework(editingHomework.id, submitData);
         message.success('更新成功');
       } else {
+        console.log('创建作业数据:', submitData);
         await homeworkService.createHomework(submitData);
         message.success('创建成功');
       }
@@ -108,7 +109,8 @@ const HomeworkManagement = () => {
       form.resetFields();
       loadHomeworks();
     } catch (error) {
-      message.error('操作失败');
+      console.error('操作失败:', error);
+      message.error(error.error || error.message || '操作失败，请检查输入是否正确');
     }
   };
 
