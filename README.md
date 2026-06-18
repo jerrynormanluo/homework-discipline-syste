@@ -4,6 +4,8 @@
 
 **家长端 Web**: https://parent-web-jade.vercel.app
 
+**学生端 Web**: https://student-mibqwbvvv-jerrynormanluos-projects.vercel.app
+
 **测试账号**:
 - 家长账号: `13800138000` / 密码: `123456`
 - 学生账号: `13900139000` / 密码: `123456`
@@ -129,16 +131,15 @@ homework-discipline-system/
 16. ✅ 亲子留言功能
 17. ✅ 勋章系统
 18. ✅ 智能提醒配置
+19. ✅ **前端拼音标注显示** (pinyin-pro集成)
+20. ✅ **浏览器语音合成** (Web Speech API)
+21. ✅ **学生端 Web 版本** (React + Vite)
 
 ### ⏳ 待完成功能
 
 1. ⏳ 学生端 React Native App（安卓平板）
-2. ⏳ 学生端 Web 版本
-3. ⏳ 家长端微信小程序
-4. ⏳ 前端拼音标注显示实现
-5. ⏳ 前端语音合成功能实现
-6. ⏳ 学生端专注锁机功能
-7. ⏳ WebSocket 实时通知（需更换部署平台）
+2. ⏳ 家长端微信小程序
+3. ⏳ WebSocket 实时通知（需更换部署平台）
 
 ## 快速开始
 
@@ -146,6 +147,7 @@ homework-discipline-system/
 
 直接访问已部署的系统，无需本地安装：
 - **家长端**: https://parent-web-jade.vercel.app
+- **学生端**: https://student-mibqwbvvv-jerrynormanluos-projects.vercel.app
 - **测试账号**: `13800138000` / `123456`
 
 ### 💻 本地开发
