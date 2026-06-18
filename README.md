@@ -1,5 +1,15 @@
 # 青少年作业自律辅助系统
 
+## 🌐 在线演示
+
+**家长端 Web**: https://parent-web-jade.vercel.app
+
+**测试账号**:
+- 家长账号: `13800138000` / 密码: `123456`
+- 学生账号: `13900139000` / 密码: `123456`
+
+---
+
 ## 项目简介
 双端联动家庭教育辅助系统，面向小学至初中自律性偏弱的学生及家长。依托家长管理端+学生显示端，实现远程作业下发、屏幕可视化展示、智能提醒、低龄拼音语音辅助、专注锁机、积分奖惩、数据统计，全方位培养孩子作业自律性。
 
@@ -101,20 +111,28 @@ homework-discipline-system/
 
 1. ✅ 确认技术栈和开发方向
 2. ✅ 设计系统架构和数据库
-3. ⏳ 搭建项目基础结构
-4. ⏳ 开发后端服务（API + 数据库 + WebSocket）
-5. ⏳ 开发学生端（React Native + Web）
-6. ⏳ 开发家长端（React Web + 微信小程序）
+3. ✅ 搭建项目基础结构
+4. ✅ 开发后端服务（API + 数据库）
+5. ✅ 开发家长端 Web
+6. ⏳ 开发学生端（React Native + Web）
 7. ⏳ 实现拼音标注功能
 8. ⏳ 实现本地语音合成功能
 9. ⏳ 实现专注模式和锁机功能
 10. ⏳ 实现积分奖惩体系
 11. ⏳ 实现数据统计和报表
-12. ⏳ 测试和优化
+12. ✅ 部署到云端 (Vercel + Neon)
 
 ## 快速开始
 
-### 后端服务
+### 🚀 在线体验 (推荐)
+
+直接访问已部署的系统，无需本地安装：
+- **家长端**: https://parent-web-jade.vercel.app
+- **测试账号**: `13800138000` / `123456`
+
+### 💻 本地开发
+
+#### 后端服务
 ```bash
 cd backend
 npm install
@@ -144,10 +162,22 @@ cd parent-miniprogram
 
 ## 环境要求
 
-- Node.js >= 16.0.0
-- PostgreSQL >= 13.0
-- React Native CLI
-- 微信开发者工具
+- Node.js >= 18.0.0
+- PostgreSQL >= 13.0 (或使用 Neon 云数据库)
+- React Native CLI (学生端)
+- 微信开发者工具 (小程序端)
+
+## 部署说明
+
+### 云端部署 (已完成)
+
+本项目已成功部署到云端：
+
+- **前端**: Vercel (https://parent-web-jade.vercel.app)
+- **后端**: Vercel Serverless (https://backend-five-indol-51.vercel.app)
+- **数据库**: Neon PostgreSQL (免费层)
+
+详细部署指南请参考: [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)
 
 ## 开发规范
 
