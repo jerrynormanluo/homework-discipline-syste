@@ -53,37 +53,41 @@ const StudentWebApp = () => {
   const loadHomeworks = async () => {
     try {
       const token = localStorage.getItem('student_token');
-      const response = await axios.get(`${API_BASE_URL}/api/homework/my-homeworks`, {
+      // 使用正确的API路径 /api/homework/
+      const response = await axios.get(`${API_BASE_URL}/api/homework/`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setHomeworks(response.data.homeworks || []);
     } catch (error) {
       console.error('加载作业失败:', error);
+      // 不强制logout,只是显示空列表
+      setHomeworks([]);
     }
   };
 
   const loadPoints = async () => {
     try {
       const token = localStorage.getItem('student_token');
-      const response = await axios.get(`${API_BASE_URL}/api/points/my-points`, {
+      // 学生端使用当前用户ID作为student_id
+      const userId = JSON.parse(atob(token.split('.')[1])).id; // 从JWT中解析用户ID
+      const response = await axios.get(`${API_BASE_URL}/api/points/balance/${userId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setPoints(response.data.total_points || 0);
+      setPoints(response.data.balance || 0);
     } catch (error) {
       console.error('加载积分失败:', error);
+      // 不强制logout,只是显示0积分
+      setPoints(0);
     }
   };
 
   const loadFocusConfig = async () => {
-    try {
-      const token = localStorage.getItem('student_token');
-      const response = await axios.get(`${API_BASE_URL}/api/focus/config`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setFocusConfig(response.data.config);
-    } catch (error) {
-      console.error('加载专注配置失败:', error);
-    }
+    // 学生端直接使用默认配置，避免权限问题
+    setFocusConfig({ 
+      default_duration: 25, 
+      mode: 'pomodoro',
+      break_duration: 5
+    });
   };
 
   const handleLogin = async (values) => {
