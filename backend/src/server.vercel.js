@@ -8,8 +8,22 @@ const app = express();
 
 // 中间件
 app.use(helmet());
+
+// CORS配置 - 临时允许所有来源(生产环境应限制)
+const corsOrigins = process.env.CORS_ORIGIN?.split(',') || ['http://localhost:3001', 'http://localhost:3002'];
 app.use(cors({
-  origin: process.env.CORS_ORIGIN?.split(',') || ['http://localhost:3001', 'http://localhost:3002'],
+  origin: function (origin, callback) {
+    // 允许没有origin的请求(如移动应用、Postman)
+    if (!origin) return callback(null, true);
+    
+    // 检查是否在允许的列表中,或者包含vercel.app域名
+    if (corsOrigins.indexOf(origin) !== -1 || origin.includes('vercel.app') || origin.includes('localhost')) {
+      callback(null, true);
+    } else {
+      console.log('CORS blocked origin:', origin);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
 }));
 app.use(express.json({ limit: '10mb' }));

@@ -5,5 +5,11 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 3002,
+    proxy: {
+      '/api': {
+        target: 'https://backend-five-indol-51.vercel.app',
+        changeOrigin: true,
+      }
+    }
   },
 })
