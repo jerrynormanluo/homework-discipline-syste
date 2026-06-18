@@ -123,14 +123,16 @@ const StudentWebApp = () => {
   const completeHomework = async (homeworkId) => {
     try {
       const token = localStorage.getItem('student_token');
-      await axios.put(`${API_BASE_URL}/api/homework/${homeworkId}`, 
+      // 使用学生专用的API端点 PATCH /api/homework/:id/status
+      await axios.patch(`${API_BASE_URL}/api/homework/${homeworkId}/status`, 
         { status: 'completed' },
         { headers: { Authorization: `Bearer ${token}` }}
       );
       message.success('作业已完成');
       loadHomeworks();
     } catch (error) {
-      message.error('操作失败');
+      console.error('标记完成失败:', error);
+      message.error(error.response?.data?.message || '操作失败');
     }
   };
 

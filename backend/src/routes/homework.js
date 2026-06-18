@@ -276,9 +276,15 @@ router.patch('/:id/status', auth, studentOnly, [
       [status, updateData.started_at || null, updateData.completed_at || null, updateData.actual_duration || null, id]
     );
 
-    // 通过Socket.io通知家长端
-    const io = req.app.get('io');
-    io.emit('homework:status_updated', { homework: result.rows[0], parent_id: homework.parent_id });
+    // 通过Socket.io通知家长端(Vercel Serverless环境不支持)
+    try {
+      const io = req.app.get('io');
+      if (io) {
+        io.emit('homework:status_updated', { homework: result.rows[0], parent_id: homework.parent_id });
+      }
+    } catch (socketError) {
+      console.log('Socket.io通知失败(正常):', socketError.message);
+    }
 
     res.json({ message: '状态更新成功', homework: result.rows[0] });
   } catch (error) {
