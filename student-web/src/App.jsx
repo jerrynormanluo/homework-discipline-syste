@@ -17,6 +17,9 @@ const StudentWebApp = () => {
   const [homeworks, setHomeworks] = useState([]);
   const [points, setPoints] = useState(0);
   const [focusConfig, setFocusConfig] = useState(null);
+  const [focusSession, setFocusSession] = useState(null); // 当前专注会话
+  const [timeRemaining, setTimeRemaining] = useState(0); // 剩余时间(秒)
+  const [isFocusing, setIsFocusing] = useState(false); // 是否正在专注
   const [loginForm] = Form.useForm();
 
   // 检查登录状态
@@ -131,6 +134,76 @@ const StudentWebApp = () => {
     }
   };
 
+  // 开始专注
+  const startFocus = async () => {
+    try {
+      const token = localStorage.getItem('student_token');
+      const duration = focusConfig?.default_duration || 25;
+      
+      const response = await axios.post(`${API_BASE_URL}/api/focus/sessions`, 
+        { planned_duration: duration },
+        { headers: { Authorization: `Bearer ${token}` }}
+      );
+      
+      setFocusSession(response.data.session);
+      setIsFocusing(true);
+      setTimeRemaining(duration * 60); // 转换为秒
+      message.success(`开始专注 ${duration} 分钟`);
+    } catch (error) {
+      console.error('开始专注失败:', error);
+      message.error(error.response?.data?.message || '开始专注失败');
+    }
+  };
+
+  // 结束专注
+  const endFocus = async () => {
+    try {
+      const token = localStorage.getItem('student_token');
+      if (focusSession) {
+        await axios.put(`${API_BASE_URL}/api/focus/sessions/${focusSession.id}/end`, 
+          {},
+          { headers: { Authorization: `Bearer ${token}` }}
+        );
+      }
+      setIsFocusing(false);
+      setFocusSession(null);
+      setTimeRemaining(0);
+      message.success('专注结束，继续加油！');
+    } catch (error) {
+      console.error('结束专注失败:', error);
+      setIsFocusing(false);
+      setFocusSession(null);
+      setTimeRemaining(0);
+    }
+  };
+
+  // 计时器效果
+  useEffect(() => {
+    let interval = null;
+    if (isFocusing && timeRemaining > 0) {
+      interval = setInterval(() => {
+        setTimeRemaining(prev => {
+          if (prev <= 1) {
+            // 时间到，自动结束
+            endFocus();
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isFocusing, timeRemaining]);
+
+  // 格式化时间显示
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
   // 登录页面
   if (!user) {
     return (
@@ -218,13 +291,52 @@ const StudentWebApp = () => {
 
           {currentTab === 'focus' && (
             <Card title="专注模式">
-              <p>专注模式可以帮助您集中注意力完成作业。</p>
-              {focusConfig && (
+              {!isFocusing ? (
                 <div>
-                  <p>建议时长: {focusConfig.default_duration || 25} 分钟</p>
-                  <Button type="primary" icon={<PlayCircleOutlined />} size="large">
-                    开始专注
-                  </Button>
+                  <p>专注模式可以帮助您集中注意力完成作业。</p>
+                  {focusConfig && (
+                    <div style={{ textAlign: 'center', padding: 20 }}>
+                      <Title level={2} style={{ color: '#1890ff' }}>
+                        {focusConfig.default_duration || 25} 分钟
+                      </Title>
+                      <Text type="secondary">建议专注时长</Text>
+                      <div style={{ marginTop: 20 }}>
+                        <Button 
+                          type="primary" 
+                          icon={<PlayCircleOutlined />} 
+                          size="large"
+                          onClick={startFocus}
+                          style={{ fontSize: 18, padding: '20px 40px' }}
+                        >
+                          开始专注
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div style={{ textAlign: 'center', padding: 40 }}>
+                  <Title level={1} style={{ color: '#52c41a', fontSize: 72 }}>
+                    {formatTime(timeRemaining)}
+                  </Title>
+                  <Text type="secondary" style={{ fontSize: 18 }}>剩余时间</Text>
+                  <div style={{ marginTop: 30 }}>
+                    <Progress 
+                      percent={Math.round(((focusConfig?.default_duration || 25) * 60 - timeRemaining) / ((focusConfig?.default_duration || 25) * 60) * 100)} 
+                      size="large"
+                      strokeColor="#52c41a"
+                    />
+                  </div>
+                  <div style={{ marginTop: 30 }}>
+                    <Button 
+                      danger
+                      size="large"
+                      onClick={endFocus}
+                      style={{ fontSize: 16, padding: '15px 30px' }}
+                    >
+                      结束专注
+                    </Button>
+                  </div>
                 </div>
               )}
             </Card>
