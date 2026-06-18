@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>作业标记完成测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>作业标记完成测试</h1>
+    
+    <div>
+        <button onclick="testLogin()">1. 登录</button>
+        <button onclick="loadHomeworks()">2. 加载作业列表</button>
+        <button onclick="clearTest()">清除</button>
+    </div>
+    
+    <div id="results"></div>
+    
+    <script>
+        const API_BASE_URL = 'https://backend-five-indol-51.vercel.app';
+        let token = null;
+        let homeworks = [];
+        
+        function addResult(title, success, data) {
+            const resultsDiv = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `test-result ${success ? 'success' : 'error'}`;
+            div.innerHTML = `
+                <strong>${title}</strong><br>
+                <pre>${JSON.stringify(data, null, 2)}</pre>
+            `;
+            resultsDiv.appendChild(div);
+        }
+        
+        async function testLogin() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        phone: '13900139000',
+                        password: '123456'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    token = data.token;
+                    localStorage.setItem('student_token', token);
+                    addResult('✅ 登录成功', true, {
+                        user: data.user,
+                        tokenLength: token.length
+                    });
+                } else {
+                    addResult('❌ 登录失败', false, data);
+                }
+            } catch (error) {
+                addResult('❌ 网络错误', false, { error: error.message });
+            }
+        }
+        
+        async function loadHomeworks() {
+            if (!token) {
+                addResult('❌ 请先登录', false, { message: 'Token不存在' });
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/homework/`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    homeworks = data.homeworks;
+                    addResult('✅ 获取作业列表成功', true, {
+                        count: homeworks.length,
+                        firstHomework: homeworks[0]
+                    });
+                    
+                    // 显示作业表格
+                    showHomeworkTable();
+                } else {
+                    addResult('❌ 获取失败', false, data);
+                }
+            } catch (error) {
+                addResult('❌ 网络错误', false, { error: error.message });
+            }
+        }
+        
+        function showHomeworkTable() {
+            const resultsDiv = document.getElementById('results');
+            const tableDiv = document.createElement('div');
+            tableDiv.innerHTML = '<h3>作业列表</h3>';
+            
+            const table = document.createElement('table');
+            table.innerHTML = `
+                <tr>
+                    <th>ID</th>
+                    <th>标题</th>
+                    <th>状态</th>
+                    <th>操作</th>
+                </tr>
+            `;
+            
+            homeworks.forEach(hw => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${hw.id}</td>
+                    <td>${hw.title}</td>
+                    <td>${hw.status}</td>
+                    <td>
+                        ${hw.status !== 'completed' ? 
+                            `<button onclick="completeHomework(${hw.id})">标记完成</button>` : 
+                            '已完成'}
+                    </td>
+                `;
+                table.appendChild(row);
+            });
+            
+            tableDiv.appendChild(table);
+            resultsDiv.appendChild(tableDiv);
+        }
+        
+        async function completeHomework(homeworkId) {
+            if (!token) {
+                addResult('❌ 请先登录', false, { message: 'Token不存在' });
+                return;
+            }
+            
+            addResult('ℹ️ 正在标记作业为完成...', true, { homeworkId });
+            
+            try {
+                console.log('调用API:', `${API_BASE_URL}/api/homework/${homeworkId}/status`);
+                console.log('Method: PATCH');
+                console.log('Body:', JSON.stringify({ status: 'completed' }));
+                
+                const response = await fetch(`${API_BASE_URL}/api/homework/${homeworkId}/status`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ status: 'completed' })
+                });
+                
+                console.log('Response Status:', response.status);
+                
+                const data = await response.json();
+                console.log('Response Data:', data);
+                
+                if (response.ok) {
+                    addResult('✅ 标记成功!', true, {
+                        message: data.message,
+                        newStatus: data.homework.status,
+                        completedAt: data.homework.completed_at
+                    });
+                    
+                    // 重新加载作业列表
+                    setTimeout(() => loadHomeworks(), 1000);
+                } else {
+                    addResult('❌ 标记失败', false, {
+                        status: response.status,
+                        data: data
+                    });
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                addResult('❌ 网络错误', false, {
+                    error: error.message,
+                    stack: error.stack
+                });
+            }
+        }
+        
+        function clearTest() {
+            document.getElementById('results').innerHTML = '';
+            token = null;
+            homeworks = [];
+            localStorage.removeItem('student_token');
+        }
+        
+        // 自动检查localStorage中的token
+        window.onload = function() {
+            const savedToken = localStorage.getItem('student_token');
+            if (savedToken) {
+                token = savedToken;
+                addResult('ℹ️ 检测到已保存的Token', true, { 
+                    tokenLength: savedToken.length,
+                    message: '可以直接点击"加载作业列表"'
+                });
+            }
+        };
+    </script>
+</body>
+</html>
