@@ -13,16 +13,20 @@ import {
   Space,
   Tag,
   Popconfirm,
+  Switch,
 } from 'antd';
 import { 
   PlusOutlined, 
   EditOutlined, 
   DeleteOutlined, 
   EyeOutlined,
+  VolumeUpOutlined,
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { homeworkService } from '../services/homeworkService';
 import { userService } from '../services/userService';
+import PinyinText from '../components/PinyinText';
+import voiceSynth from '../utils/voiceSynth';
 import dayjs from 'dayjs';
 
 const { Content } = Layout;
@@ -35,6 +39,7 @@ const HomeworkManagement = () => {
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [editingHomework, setEditingHomework] = useState(null);
+  const [showPinyin, setShowPinyin] = useState(true); // 是否显示拼音
   const [form] = Form.useForm();
   const navigate = useNavigate();
 
@@ -143,12 +148,40 @@ const HomeworkManagement = () => {
     return colors[priority] || 'default';
   };
 
+  // 播放作业标题语音
+  const playHomeworkVoice = (text) => {
+    if (!text) return;
+    voiceSynth.speak(text, { rate: 0.9 });
+  };
+
   const columns = [
     {
-      title: '作业标题',
+      title: (
+        <Space>
+          <span>作业标题</span>
+          <Switch
+            size="small"
+            checked={showPinyin}
+            onChange={setShowPinyin}
+            checkedChildren="拼音"
+            unCheckedChildren="拼音"
+          />
+        </Space>
+      ),
       dataIndex: 'title',
       key: 'title',
-      width: 200,
+      width: 250,
+      render: (text, record) => (
+        <Space>
+          <PinyinText text={text} showPinyin={showPinyin} />
+          <Button
+            type="text"
+            icon={<VolumeUpOutlined />}
+            onClick={() => playHomeworkVoice(text)}
+            size="small"
+          />
+        </Space>
+      ),
     },
     {
       title: '学科',
