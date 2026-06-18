@@ -22,24 +22,31 @@ const StudentWebApp = () => {
   // 检查登录状态
   useEffect(() => {
     const token = localStorage.getItem('student_token');
-    if (token) {
-      loadUserInfo();
-      loadHomeworks();
-      loadPoints();
-      loadFocusConfig();
+    if (token && !user) {
+      // 如果有token但没有用户信息，尝试加载（但不强制logout）
+      loadUserData();
     }
   }, []);
 
-  const loadUserInfo = async () => {
+  // 加载用户数据（不强制logout）
+  const loadUserData = async () => {
     try {
       const token = localStorage.getItem('student_token');
-      const response = await axios.get(`${API_BASE_URL}/api/users/me`, {
+      // 使用正确的API路径 /api/auth/me
+      const response = await axios.get(`${API_BASE_URL}/api/auth/me`, {
         headers: { Authorization: `Bearer ${token}` }
       });
+      
       setUser(response.data.user);
+      loadHomeworks();
+      loadPoints();
+      loadFocusConfig();
     } catch (error) {
-      console.error('加载用户信息失败:', error);
-      logout();
+      console.error('加载用户数据失败:', error);
+      // 只有在明确是401未授权时才logout
+      if (error.response?.status === 401) {
+        logout();
+      }
     }
   };
 
@@ -83,12 +90,17 @@ const StudentWebApp = () => {
     try {
       const response = await axios.post(`${API_BASE_URL}/api/auth/login`, values);
       localStorage.setItem('student_token', response.data.token);
+      
+      // 直接使用登录返回的用户信息
+      setUser(response.data.user);
       message.success('登录成功');
-      loadUserInfo();
+      
+      // 加载其他数据
       loadHomeworks();
       loadPoints();
       loadFocusConfig();
     } catch (error) {
+      console.error('登录失败:', error);
       message.error(error.response?.data?.message || '登录失败');
     }
   };
