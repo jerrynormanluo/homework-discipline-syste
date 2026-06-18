@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学生端登录测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>学生端登录测试</h1>
+    
+    <div>
+        <h2>测试步骤:</h2>
+        <button onclick="testLogin()">1. 测试登录API</button>
+        <button onclick="testUserInfo()">2. 测试获取用户信息</button>
+        <button onclick="testHomework()">3. 测试获取作业列表</button>
+        <button onclick="clearTest()">清除测试结果</button>
+    </div>
+    
+    <div id="results"></div>
+    
+    <script>
+        const API_BASE_URL = 'https://backend-five-indol-51.vercel.app';
+        let token = null;
+        
+        function addResult(title, success, data) {
+            const resultsDiv = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `test-result ${success ? 'success' : 'error'}`;
+            div.innerHTML = `
+                <strong>${title}</strong><br>
+                <pre>${JSON.stringify(data, null, 2)}</pre>
+            `;
+            resultsDiv.appendChild(div);
+        }
+        
+        async function testLogin() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        phone: '13900139000',
+                        password: '123456'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    token = data.token;
+                    localStorage.setItem('student_token', token);
+                    addResult('✅ 登录成功', true, {
+                        message: data.message,
+                        user: data.user,
+                        tokenLength: token.length
+                    });
+                } else {
+                    addResult('❌ 登录失败', false, data);
+                }
+            } catch (error) {
+                addResult('❌ 网络错误', false, { error: error.message });
+            }
+        }
+        
+        async function testUserInfo() {
+            if (!token) {
+                addResult('❌ 请先登录', false, { message: 'Token不存在' });
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/auth/me`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    addResult('✅ 获取用户信息成功', true, data);
+                } else {
+                    addResult('❌ 获取用户信息失败', false, {
+                        status: response.status,
+                        data: data
+                    });
+                }
+            } catch (error) {
+                addResult('❌ 网络错误', false, { error: error.message });
+            }
+        }
+        
+        async function testHomework() {
+            if (!token) {
+                addResult('❌ 请先登录', false, { message: 'Token不存在' });
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/homework/`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    addResult('✅ 获取作业列表成功', true, {
+                        homeworkCount: data.homeworks.length,
+                        firstHomework: data.homeworks[0]
+                    });
+                } else {
+                    addResult('❌ 获取作业列表失败', false, {
+                        status: response.status,
+                        data: data
+                    });
+                }
+            } catch (error) {
+                addResult('❌ 网络错误', false, { error: error.message });
+            }
+        }
+        
+        function clearTest() {
+            document.getElementById('results').innerHTML = '';
+            token = null;
+            localStorage.removeItem('student_token');
+        }
+        
+        // 自动检查localStorage中的token
+        window.onload = function() {
+            const savedToken = localStorage.getItem('student_token');
+            if (savedToken) {
+                token = savedToken;
+                addResult('ℹ️ 检测到已保存的Token', true, { 
+                    tokenLength: savedToken.length,
+                    message: '可以直接测试获取用户信息和作业列表'
+                });
+            }
+        };
+    </script>
+</body>
+</html>
